@@ -278,10 +278,11 @@ csak egy sablon renderelésre kerül. A layoutokat ki lehet kapcsolni a
     haml :index, :layout => !request.xhr?
   end
 
-== Helpers
+== Helperek
 
-Use the top-level <tt>helpers</tt> method to define helper methods for use in
-route handlers and templates:
+Használd a felső szintű <tt>helpers</tt> metódust azokhoz a helper
+függvényekhez, amiket az útvonal metódusokban és a sablonokban akarsz
+használni:
 
   helpers do
     def bar(name)
@@ -310,35 +311,38 @@ választ. A szűrőkbe felvett példányváltozók elérhetőek lesznek az
     params[:splat] #=> 'bar/baz'
   end
 
-== Halting
+== Megállítás
 
-To immediately stop a request during a before filter or route use:
+Egy kérés előszűrőben vagy útvonalban történő azonnal blokkolásához
+használd a következő parancsot:
 
   halt
 
-You can also specify a body when halting ...
+A megállításkor egy blokktörzset is megadhatsz ...
 
-  halt 'this will be the body'
+  halt 'ez fog megjelenni a törzsben'
 
-Or set the status and body ...
+Vagy állítsd be mind a státuszt, mind pedig a törzset ...
 
-  halt 401, 'go away!'
+  halt 401, 'menj innen!'
 
 == Passzolás
 
-A route can punt processing to the next matching route using <tt>pass</tt>:
+Az útvonalak továbbadhatják a végrehajtást egy másik útvonalnak 
+a <tt>pass</tt> függvényhívással:
 
   get '/guess/:who' do
     pass unless params[:who] == 'Frank'
-    "You got me!"
+    "Elkaptál!"
   end
 
   get '/guess/*' do
-    "You missed!"
+    "Elhibáztál!"
   end
 
-The route block is immediately exited and control continues with the next
-matching route. If no matching route is found, a 404 is returned.
+Az útvonal blokkja azonnal kilép és átadja a vezérlést a következő
+illeszkedő útvonalnak. Ha nem talál megfelelő útvonalat, a Sinatra
+egy 404-es hibával tér vissza.
 
 == Configuration
 
