@@ -206,29 +206,31 @@ globálisan is beállíthatók a Sinatra konfigurációi között, lásd az
 
 Lerendereli a beágyazott sablon karakerláncát.
 
-=== Accessing Variables in Templates
+=== Változók elérése a sablonokban
 
-Templates are evaluated within the same context as route handlers. Instance
-variables set in route handlers are direcly accessible by templates:
+A sablonok ugyanabban a kontextusban kerülnek kiértékelésre, mint az
+útvonal metódusok (route handlers). Az útvonal metódusokban megadott
+változók közvetlenül elérhetőek lesznek a sablonokban:
 
   get '/:id' do
     @foo = Foo.find(params[:id])
     haml '%h1= @foo.name'
   end
 
-Or, specify an explicit Hash of local variables:
+De megadhatod egy lokális változókat tartalmazó explicit hash-ben is:
 
   get '/:id' do
     foo = Foo.find(params[:id])
     haml '%h1= foo.name', :locals => { :foo => foo }
   end
 
-This is typically used when rendering templates as partials from within
-other templates.
+Ezt leginkább akkor érdemes megtenni, ha partial-eket akarunk renderelni
+valamely más sablonból.
 
-=== In-file Templates
+=== In-file sablonok
 
-Templates may be defined at the end of the source file:
+Sablonokat úgy is megadhatunk, hogy egyszerűen az alkalmazás fájl
+végére begépeljük:
 
   require 'rubygems'
   require 'sinatra'
@@ -244,30 +246,33 @@ Templates may be defined at the end of the source file:
     = yield
 
   @@ index
-  %div.title Hello world!!!!!
+  %div.title Helló Világ!!!!!
 
-NOTE: In-file templates defined in the source file that requires sinatra
-are automatically loaded. Call the <tt>use_in_file_templates!</tt>
-method explicitly if you have in-file templates in other source files.
+Megjegyzés: azok az in-file sablonok, amelyek az alkalmazás fájl végére
+kerülnek és függnek a sinatra könyvtártól, automatikusan betöltődnek.
+Ha ugyanezt más alkalmazásfájlban is szeretnéd megtenni, hívd meg 
+a <tt>use_in_file_templates!</tt> metódust az adott fájlban.
 
-=== Named Templates
+=== Elnevezett sablonok
 
-Templates may also be defined using the top-level <tt>template</tt> method:
+Sablonokat végül a felsőszintű <tt>template</tt> metódussal is 
+definiálhatunk: 
 
   template :layout do
     "%html\n  =yield\n"
   end
 
   template :index do
-    '%div.title Hello World!'
+    '%div.title Helló Világ!'
   end
 
   get '/' do
     haml :index
   end
 
-If a template named "layout" exists, it will be used each time a template
-is rendered. You can disable layouts by passing <tt>:layout => false</tt>.
+Ha létezik "layout" nevű sablon, akkor az minden esetben meghívódik, amikor
+csak egy sablon renderelésre kerül. A layoutokat ki lehet kapcsolni a
+<tt>:layout => false</tt> meghívásával.
 
   get '/' do
     haml :index, :layout => !request.xhr?
