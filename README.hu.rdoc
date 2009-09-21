@@ -293,19 +293,20 @@ route handlers and templates:
     bar(params[:name])
   end
 
-== Filters
+== Szűrők (filter)
 
-Before filters are evaluated before each request within the context of the
-request and can modify the request and response. Instance variables set in
-filters are accessible by routes and templates:
+Az előszűrők (before filter) az adott hívás kontextusában minden egyes
+kérés alkalmával kiértékelődnek, így módosíthatják a kérést és a
+választ. A szűrőkbe felvett példányváltozók elérhetőek lesznek az
+útvonalakban és a sablonokban:
 
   before do
-    @note = 'Hi!'
+    @note = 'Csá!'
     request.path_info = '/foo/bar/baz'
   end
 
   get '/foo/*' do
-    @note #=> 'Hi!'
+    @note #=> 'Szeva!'
     params[:splat] #=> 'bar/baz'
   end
 
@@ -323,7 +324,7 @@ Or set the status and body ...
 
   halt 401, 'go away!'
 
-== Passing
+== Passzolás
 
 A route can punt processing to the next matching route using <tt>pass</tt>:
 
