@@ -15,9 +15,9 @@ Telepítsd a gem-et és indítsd el az alkalmazást a következőképpen:
   sudo gem install sinatra
   ruby myapp.rb
 
-Az alkalmazás immár elérhető itt: http://localhost:4567
+Az alkalmazás elérhető lesz itt: http://localhost:4567
 
-== Útvonalak (route)
+== Útvonalak (routes)
 
 A Sinatrában az útvonalat egy HTTP metódus és egy URL-re illeszkedő minta
 párosa alkotja. Minden egyes útvonalhoz tartozik egy blokk:
@@ -39,7 +39,7 @@ párosa alkotja. Minden egyes útvonalhoz tartozik egy blokk:
   end
 
 Az útvonalak illeszkedését a rendszer a definiálásuk sorrendjében
-ellenőrzi. Az első illeszkedő útvonalhoz tartozó metódus kerül
+ellenőrzi. Sorrendben mindig az első illeszkedő útvonalhoz tartozó metódus kerül
 meghívásra.
 
 Az útvonalminták tartalmazhatnak paramétereket is, melyeket a <tt>params</tt>
@@ -52,7 +52,7 @@ hash-ből érhetünk el:
   end
 
 De nevesített blokk paraméterek útján is el tudod érni:
-# You can also access named parameters via block parameters:
+# FIXME You can also access named parameters via block parameters:
 
   get '/hello/:name' do |n|
     "Helló #{n}!"
@@ -60,7 +60,7 @@ De nevesített blokk paraméterek útján is el tudod érni:
 
 Az útvonalminták közt szerepelhetnek joker paraméterek is, melyeket a 
 <tt>params[:splat]</tt> tömbön keresztül tudunk elérni.
-# Route patterns may also include splat (or wildcard) parameters, accessible
+# FIXME Route patterns may also include splat (or wildcard) parameters, accessible
 # via the <tt>params[:splat]</tt> array.
 
   get '/say/*/to/*' do
@@ -108,7 +108,7 @@ Fontos mgejegyezni, hogy a nyilvános könyvtár neve nem szerepel az URL-ben.
 A <tt>./public/css/style.css</tt> fájl az
 <tt>http://example.com/css/style.css</tt> URL-en érhető el.
 
-== Nézetek / Sablonok
+== Nézetek és Sablonok
 
 A sablonfájlokat rendszerint a  <tt>./views</tt> könyvtárba helyezzük, de
 itt is lehetőség nyílik egyéb könyvtár használatára:
@@ -117,8 +117,8 @@ itt is lehetőség nyílik egyéb könyvtár használatára:
 
 Nagyon fontos észben tartani, hogy a sablononkra mindig szimbólumokkal
 hivatkozunk, még akkor is, ha egyéb (ebben az esetben a 
-<tt>:'subdir/template'</tt>) könyvtárban tároljuk is őket. 
-# Rendering methods will render any strings passed to them directly.
+<tt>:'subdir/template'</tt>) könyvtárban tároljuk őket. 
+# FIXME Rendering methods will render any strings passed to them directly.
 
 === Haml sablonok
 
@@ -344,33 +344,32 @@ Az útvonal blokkja azonnal kilép és átadja a vezérlést a következő
 illeszkedő útvonalnak. Ha nem talál megfelelő útvonalat, a Sinatra
 egy 404-es hibával tér vissza.
 
-== Configuration
+== Beállítások
 
-Run once, at startup, in any environment:
+Csak indításkor, de minden környezetre érvényesen fusson le:
 
   configure do
     ...
   end
 
-Run only when the environment (RACK_ENV environment variable) is set to
-<tt>:production</tt>:
+Csak akkor fusson le, ha a környezet (a RACK_ENV környezeti változóban)
+<tt>:production</tt>-ra van állítva:
 
   configure :production do
     ...
   end
 
-Run when the environment is set to either <tt>:production</tt> or
-<tt>:test</tt>:
+Csak akkor fusson le, ha a környezet <tt>:production</tt> vagy <tt>:test</tt>:
 
   configure :production, :test do
     ...
   end
 
-== Error handling
+== Hibakezelés
 
-Error handlers run within the same context as routes and before filters, which
-means you get all the goodies it has to offer, like <tt>haml</tt>, <tt>erb</tt>,
-<tt>halt</tt>, etc.
+A hibakezelők ugyanabban a kontextusban futnak le, mint az útvonalak és
+előszűrők, így ugyanazok a könyvtárak elérhetőek számukra is, mint
+például a <tt>haml</tt>, az <tt>erb</tt>, a <tt>halt</tt> stb.
 
 === Not Found
 
