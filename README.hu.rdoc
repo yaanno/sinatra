@@ -51,8 +51,8 @@ hash-ből érhetünk el:
     "Helló #{params[:name]}!"
   end
 
-De nevesített blokk paraméterek útján is el tudod érni:
-# FIXME You can also access named parameters via block parameters:
+A kulcsszavas argumentumokat (named parameters) blokk paraméterek útján
+is el tudod érni:
 
   get '/hello/:name' do |n|
     "Helló #{n}!"
@@ -60,8 +60,6 @@ De nevesített blokk paraméterek útján is el tudod érni:
 
 Az útvonalminták közt szerepelhetnek joker paraméterek is, melyeket a 
 <tt>params[:splat]</tt> tömbön keresztül tudunk elérni.
-# FIXME Route patterns may also include splat (or wildcard) parameters, accessible
-# via the <tt>params[:splat]</tt> array.
 
   get '/say/*/to/*' do
     # illeszkedik a /say/hello/to/world mintára
@@ -73,20 +71,20 @@ Az útvonalminták közt szerepelhetnek joker paraméterek is, melyeket a
     params[:splat] # => ["path/to/file", "xml"]
   end
 
-Reguláris kifejezések is alkalmazhatók útvonalak illesztéséhez:
+Reguláris kifejezések is alkalmazhatók útvonalmintákként:
 
   get %r{/hello/([\w]+)} do
     "Helló, #{params[:captures].first}!"
   end
 
-Vagy blokk paraméterek:
+Esetleg blokk paraméterek:
 
   get %r{/hello/([\w]+)} do |c|
     "Helló, #{c}!"
   end
 
-Az útvonalak azonban számtalan egyéb illeszkedési feltétel szerint is
-tervezhetők, így például az user agent karakterláncra építve:
+Az útvonalak azonban számos egyéb illeszkedési feltétel szerint is
+tervezhetők, így például az user agent karakterláncot alapul véve:
 
   get '/foo', :agent => /Songbird (\d\.\d)[\d\/]*?/ do
     "A Songbird #{params[:agent][0]} verzióját használod"
@@ -100,13 +98,13 @@ tervezhetők, így például az user agent karakterláncra építve:
 
 A statikus fájlok kiszolgálása a <tt>./public</tt> könyvtárból
 történik, de természetesen más könyvtárat is megadhatsz erre a célra,
-mégpedig a <tt>:public</tt> opció beállításával:
+mégpedig a <tt>:public</tt> kapcsoló beállításával:
 
   set :public, File.dirname(__FILE__) + '/static'
 
 Fontos mgejegyezni, hogy a nyilvános könyvtár neve nem szerepel az URL-ben.
 A <tt>./public/css/style.css</tt> fájl az
-<tt>http://example.com/css/style.css</tt> URL-en érhető el.
+<tt>http://example.com/css/style.css</tt> URL-en lesz elérhető.
 
 == Nézetek és Sablonok
 
@@ -117,12 +115,12 @@ itt is lehetőség nyílik egyéb könyvtár használatára:
 
 Nagyon fontos észben tartani, hogy a sablononkra mindig szimbólumokkal
 hivatkozunk, még akkor is, ha egyéb (ebben az esetben a 
-<tt>:'subdir/template'</tt>) könyvtárban tároljuk őket. 
-# FIXME Rendering methods will render any strings passed to them directly.
+<tt>:'subdir/template'</tt>) könyvtárban tároljuk őket. A renderelő
+metódusok minden, nekik közvetlenül átadott karakterláncot megjelenítenek.
 
 === Haml sablonok
 
-HAML sablonok rendereléséhez szükségünk lesz a haml gem-re/könyvtárra:
+HAML sablonok rendereléséhez szükségünk lesz a haml gem-re vagy könyvtárra:
 
   ## Importáljuk be a haml-t az alkalmazásba
   require 'haml'
@@ -133,10 +131,10 @@ HAML sablonok rendereléséhez szükségünk lesz a haml gem-re/könyvtárra:
 
 Ez szépen lerendereli a <tt>./views/index.haml</tt> sablont.
 
-A {Haml beállításai}[http://haml.hamptoncatlin.com/docs/rdoc/classes/Haml.html]
+A {Haml kapcsolói}[http://haml.hamptoncatlin.com/docs/rdoc/classes/Haml.html]
 globálisan is beállíthatók a Sinatra konfigurációi között, lásd az
-{Options and Configurations}[http://www.sinatrarb.com/configuration.html] lapot,
-ám ezek is felülírhatók akár metódusszinten.
+{Options and Configurations}[http://www.sinatrarb.com/configuration.html] lapot.
+A globális beállításokat lehetőségünk van felülírni metódus szinten is.
 
   set :haml, {:format => :html5 } # az alapértelmezett Haml formátum az :xhtml
 
@@ -185,10 +183,10 @@ Sass sablonok használatához szükség lesz a sass gem-re vagy könyvtárra:
 
 Így a <tt>./views/stylesheet.sass</tt> fájl máris renderelhető.
 
-A {Sass beállításai}[http://haml.hamptoncatlin.com/docs/rdoc/classes/Sass.html]
+A {Sass kapcsolói}[http://haml.hamptoncatlin.com/docs/rdoc/classes/Sass.html]
 globálisan is beállíthatók a Sinatra konfigurációi között, lásd az
-{Options and Configurations}[http://www.sinatrarb.com/configuration.html] lapot,
-ám ezek is felülírhatók akár metódusszinten.
+{Options and Configurations}[http://www.sinatrarb.com/configuration.html] lapot.
+A globális beállításokat lehetőségünk van felülírni metódus szinten is.
 
   set :sass, {:style => :compact } # az alapértelmezett Sass stílus a :nested
 
@@ -227,10 +225,10 @@ De megadhatod egy lokális változókat tartalmazó explicit hash-ben is:
 Ezt leginkább akkor érdemes megtenni, ha partial-eket akarunk renderelni
 valamely más sablonból.
 
-=== In-file sablonok
+=== Fájlon belüli sablonok
 
 Sablonokat úgy is megadhatunk, hogy egyszerűen az alkalmazás fájl
-végére begépeljük:
+végére begépeljük őket:
 
   require 'rubygems'
   require 'sinatra'
@@ -248,12 +246,12 @@ végére begépeljük:
   @@ index
   %div.title Helló Világ!!!!!
 
-Megjegyzés: azok az in-file sablonok, amelyek az alkalmazás fájl végére
+Megjegyzés: azok a fájlon belüli sablonok, amelyek az alkalmazás fájl végére
 kerülnek és függnek a sinatra könyvtártól, automatikusan betöltődnek.
 Ha ugyanezt más alkalmazásfájlban is szeretnéd megtenni, hívd meg 
 a <tt>use_in_file_templates!</tt> metódust az adott fájlban.
 
-=== Elnevezett sablonok
+=== Kulcsszavas sablonok
 
 Sablonokat végül a felsőszintű <tt>template</tt> metódussal is 
 definiálhatunk: 
@@ -294,12 +292,12 @@ használni:
     bar(params[:name])
   end
 
-== Szűrők (filter)
+== Szűrők (filters)
 
 Az előszűrők (before filter) az adott hívás kontextusában minden egyes
 kérés alkalmával kiértékelődnek, így módosíthatják a kérést és a
-választ. A szűrőkbe felvett példányváltozók elérhetőek lesznek az
-útvonalakban és a sablonokban:
+választ egyaránt. A szűrőkbe felvett példányváltozók elérhetőek lesznek
+az útvonalakban és a sablonokban is:
 
   before do
     @note = 'Csá!'
@@ -322,7 +320,7 @@ A megállításkor egy blokktörzset is megadhatsz ...
 
   halt 'ez fog megjelenni a törzsben'
 
-Vagy állítsd be mind a státuszt, mind pedig a törzset ...
+Vagy állítsd be a HTTP státuszt és a törzset is egyszerre ...
 
   halt 401, 'menj innen!'
 
@@ -332,7 +330,7 @@ Az útvonalak továbbadhatják a végrehajtást egy másik útvonalnak
 a <tt>pass</tt> függvényhívással:
 
   get '/guess/:who' do
-    pass unless params[:who] == 'Frank'
+    pass unless params[:who] == 'Frici'
     "Elkaptál!"
   end
 
@@ -368,51 +366,54 @@ Csak akkor fusson le, ha a környezet <tt>:production</tt> vagy <tt>:test</tt>:
 == Hibakezelés
 
 A hibakezelők ugyanabban a kontextusban futnak le, mint az útvonalak és
-előszűrők, így ugyanazok a könyvtárak elérhetőek számukra is, mint
-például a <tt>haml</tt>, az <tt>erb</tt>, a <tt>halt</tt> stb.
+előszűrők, ezért számukra is elérhetőek mindazok a könyvtárak, amelyek
+az utóbbiak rendelkezésére is állnak; így például a <tt>haml</tt>, 
+az <tt>erb</tt>, a <tt>halt</tt> stb.
 
-=== Not Found
+=== Nem található
 
-When a <tt>Sinatra::NotFound</tt> exception is raised, or the response's status
-code is 404, the <tt>not_found</tt> handler is invoked:
+Amikor a <tt>Sinatra::NotFound</tt> kivétel fellép, vagy a válasz HTTP
+státuszkódja 404-es, mindig a <tt>not_found</tt> metódus hívódik meg.
 
   not_found do
-    'This is nowhere to be found'
+    'Sehol sem találom, amit keresel'
   end
 
-=== Error
+=== Hiba
 
-The +error+ handler is invoked any time an exception is raised from a route
-block or before filter. The exception object can be obtained from the
-<tt>sinatra.error</tt> Rack variable:
+Az +error+ metódus hívódik meg olyankor, amikor egy útvonal, blokk vagy
+előszűrő kivételt vált ki. A kivétel objektum lehívható a
+<tt>sinatra.error</tt> Rack változótól:
 
   error do
-    'Sorry there was a nasty error - ' + env['sinatra.error'].name
+    'Elnézést, de valami szörnyű hiba lépett fel - ' + env['sinatra.error'].name
   end
 
-Custom errors:
+Egyéni hibakezelés:
 
   error MyCustomError do
-    'So what happened was...' + request.env['sinatra.error'].message
+    'Szóval az van, hogy...' + request.env['sinatra.error'].message
   end
 
-Then, if this happens:
+És amikor fellép:
 
   get '/' do
-    raise MyCustomError, 'something bad'
+    raise MyCustomError, 'megmakkant a cucmány!'
   end
 
-You get this:
+Ez fog megjelenni:
 
-  So what happened was... something bad
+  Szóval az van, hogy... megmakkant a cucmány!
 
 Sinatra installs special <tt>not_found</tt> and <tt>error</tt> handlers when
 running under the development environment.
 
-== Mime types
+== Mime típusok
 
-When using <tt>send_file</tt> or static files you may have mime types Sinatra
-doesn't understand. Use +mime+ to register them by file extension:
+A <tt>send_file</tt> metódus használatakor, vagy statikus fájlok
+kiszolgálásakor előfordulhat, hogy a Sinatra nem ismeri fel a fájlok
+mime típusát. Ilyenkor használd a +mime+ kapcsolót a fájlkiterjesztés
+bevezetéséhez:
 
   mime :foo, 'text/foo'
 
@@ -536,54 +537,54 @@ top-level. Have a look at the code for yourself: here's the
 {Sinatra::Delegator mixin}[http://github.com/sinatra/sinatra/blob/master/lib/sinatra/base.rb#L1064]
 being {included into the main namespace}[http://github.com/sinatra/sinatra/blob/master/lib/sinatra/main.rb#L25].
 
-== Command line
+== Parancssor
 
-Sinatra applications can be run directly:
+Sinatra alkalmazásokat közvetlenül futtathatunk:
 
   ruby myapp.rb [-h] [-x] [-e ENVIRONMENT] [-p PORT] [-s HANDLER]
 
-Options are:
+Az alábbi kapcsolókat ismeri fel a rendszer:
 
-  -h # help
-  -p # set the port (default is 4567)
-  -e # set the environment (default is development)
-  -s # specify rack server/handler (default is thin)
-  -x # turn on the mutex lock (default is off)
+  -h # segítség
+  -p # a port beállítása (alapértelmezés szerint ez a 4567-es)
+  -e # a környezet beállítása (alapértelmezés szerint ez a development)
+  -s # a rack szerver/handler beállítása (alapértelmezetten ez a thin)
+  -x # a mutex lock bekapcsolása (alapértelmezetten ki van kapcsolva)
 
-== The Bleeding Edge
+== Fejlesztői változat
 
-If you would like to use Sinatra's latest bleeding code, create a local
-clone and run your app with the <tt>sinatra/lib</tt> directory on the
-<tt>LOAD_PATH</tt>:
+Ha a Sinatra legfrissebb, fejlesztői változatát szeretnéd használni,
+készíts egy helyi másolatot és indítsd az alkalmazásodat úgy,
+hogy a <tt>sinatra/lib</tt> könyvtár elérhető legyen a 
+<tt>LOAD_PATH</tt>-on:
 
   cd myapp
   git clone git://github.com/sinatra/sinatra.git
   ruby -Isinatra/lib myapp.rb
 
-Alternatively, you can add the <tt>sinatra/lib</tt> directory to the
-<tt>LOAD_PATH</tt> in your application:
+De hozzá is adhatod a <tt>sinatra/lib</tt> könyvtárat a <tt>LOAD_PATH</tt>-hoz
+az alkalmazásodban:
 
   $LOAD_PATH.unshift File.dirname(__FILE__) + '/sinatra/lib'
   require 'rubygems'
   require 'sinatra'
 
   get '/about' do
-    "I'm running version " + Sinatra::VERSION
+    "A következő változatot futtatom " + Sinatra::VERSION
   end
 
-To update the Sinatra sources in the future:
+A Sinatra frissítését később így végezheted el:
 
   cd myproject/sinatra
   git pull
 
-== More
+== További információk
 
-* {Project Website}[http://sinatra.github.com/] - Additional documentation,
-  news, and links to other resources.
-* {Contributing}[http://sinatra.github.com/contributing.html] - Find a bug? Need
-  help? Have a patch?
-* {Lighthouse}[http://sinatra.lighthouseapp.com] - Issue tracking and release
-  planning.
+* {A projekt weboldala}[http://sinatra.github.com/] - Kiegészítő dokumentáció,
+  hírek, hasznos linkek
+* {Közreműködés}[http://sinatra.github.com/contributing.html] - Hibát találtál?
+  Segítségre van szükséged? Foltot küldenél be?
+* {Lighthouse}[http://sinatra.lighthouseapp.com] - Hibakövetés és kiadások
 * {Twitter}[http://twitter.com/sinatra]
-* {Mailing List}[http://groups.google.com/group/sinatrarb]
-* {IRC: #sinatra}[irc://chat.freenode.net/#sinatra] on http://freenode.net
+* {Levelezőlista}[http://groups.google.com/group/sinatrarb]
+* {IRC: #sinatra}[irc://chat.freenode.net/#sinatra] a http://freenode.net-en
