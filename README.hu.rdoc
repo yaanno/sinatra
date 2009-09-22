@@ -398,15 +398,15 @@ Egyéni hibakezelés:
 És amikor fellép:
 
   get '/' do
-    raise MyCustomError, 'megmakkant a cucmány!'
+    raise MyCustomError, 'valami nem stimmel!'
   end
 
 Ez fog megjelenni:
 
-  Szóval az van, hogy... megmakkant a cucmány!
+  Szóval az van, hogy... valami nem stimmel!
 
-Sinatra installs special <tt>not_found</tt> and <tt>error</tt> handlers when
-running under the development environment.
+A Sinatra speciális <tt>not_found</tt> és <tt>error</tt> hibakezelőket
+használ amikor a futtatási környezet fejlesztői módba van kapcsolva.
 
 == Mime típusok
 
@@ -419,14 +419,16 @@ bevezetéséhez:
 
 == Rack Middleware
 
-Sinatra rides on Rack[http://rack.rubyforge.org/], a minimal standard
-interface for Ruby web frameworks. One of Rack's most interesting capabilities
-for application developers is support for "middleware" -- components that sit
-between the server and your application monitoring and/or manipulating the
-HTTP request/response to provide various types of common functionality.
+A Sinatra egy Ruby keretrendszerek számára kifejlesztett egyszerű és szabványos
+interfészre, a Rack[http://rack.rubyforge.org/]-re épül. A Rack fejlesztői 
+szempontból egyik legérdekesebb jellemzője, hogy támogatja az úgynevezett
+"middleware" elnevezésű komponenseket, amelyek beékelődnek a szerver és az
+alkalmazás közé, így képesek megfigyelni és/vagy módosítani a HTTP 
+kéréseket és válaszokat. Segítségükkel különféle, egységesen működő
+funkciókat építhetünk be rendszerünkbe.
 
-Sinatra makes building Rack middleware pipelines a cinch via a top-level
-+use+ method:
+A Sinatra keretrendszerben gyerekjáték a Rack middleware-ek behúzása az
++use+ metódus segítségével:
 
   require 'sinatra'
   require 'my_custom_middleware'
@@ -435,28 +437,30 @@ Sinatra makes building Rack middleware pipelines a cinch via a top-level
   use MyCustomMiddleware
 
   get '/hello' do
-    'Hello World'
+    'Helló Világ'
   end
 
-The semantics of +use+ are identical to those defined for the
-Rack::Builder[http://rack.rubyforge.org/doc/classes/Rack/Builder.html] DSL
-(most frequently used from rackup files). For example, the +use+ method
-accepts multiple/variable args as well as blocks:
+Az +use+ metódus szemantikája megegyezik a 
+Rack::Builder[http://rack.rubyforge.org/doc/classes/Rack/Builder.html] DSL-ben
+használt +use+ metóduséval (az említett DSL-t leginkább rackup állományokban
+használják). Hogy egy példát említsünk, az +use+ metódus egyaránt elfogad 
+változókat és blokkokat is:
 
   use Rack::Auth::Basic do |username, password|
-    username == 'admin' && password == 'secret'
+    username == 'admin' && password == 'titkos'
   end
 
-Rack is distributed with a variety of standard middleware for logging,
-debugging, URL routing, authentication, and session handling. Sinatra uses
-many of of these components automatically based on configuration so you
-typically don't have to +use+ them explicitly.
+A Rack terjesztéssel egy csomó alap middleware komponens is érkezik,
+amelyekkel a naplózás, URL útvonalak megadása, autentikáció és 
+munkamenet-kezelés könnyen megvalósítható. A Sinatra ezek közül elég
+sokat automatikusan felhasznál a beállításoktól függően, így ezek
+explicit betöltésével (+use+) nem kell bajlódnod.
 
-== Testing
+== Tesztelés
 
-Sinatra tests can be written using any Rack-based testing library
-or framework. {Rack::Test}[http://gitrdoc.com/brynary/rack-test] is
-recommended:
+Sinatra teszteket bármely Rack alapú tesztelő könyvtárral vagy
+keretrendszerrel készíthetsz. Mi a {Rack::Test}[http://gitrdoc.com/brynary/rack-test]
+könyvtárat ajánljuk:
 
   require 'my_sinatra_app'
   require 'rack/test'
@@ -470,32 +474,34 @@ recommended:
 
     def test_my_default
       get '/'
-      assert_equal 'Hello World!', last_response.body
+      assert_equal 'Helló Világ!', last_response.body
     end
 
     def test_with_params
-      get '/meet', :name => 'Frank'
-      assert_equal 'Hello Frank!', last_response.body
+      get '/meet', :name => 'Frici'
+      assert_equal 'Helló Frici!', last_response.body
     end
 
     def test_with_rack_env
       get '/', {}, 'HTTP_USER_AGENT' => 'Songbird'
-      assert_equal "You're using Songbird!", last_response.body
+      assert_equal "Songbird-öt használsz!", last_response.body
     end
   end
 
-NOTE: The built-in Sinatra::Test module and Sinatra::TestHarness class
-are deprecated as of the 0.9.2 release.
+Megjegyzés: A beépített Sinatra::Test és Sinatra::TestHarness osztályok
+a 0.9.2-es kiadástól kezdve elavultnak számítanak.
 
-== Sinatra::Base - Middleware, Libraries, and Modular Apps
+== Sinatra::Base - Middleware-ek, könyvtárak és moduláris alkalmazások
 
-Defining your app at the top-level works well for micro-apps but has
-considerable drawbacks when building reuseable components such as Rack
-middleware, Rails metal, simple libraries with a server component, or
-even Sinatra extensions. The top-level DSL pollutes the Object namespace
-and assumes a micro-app style configuration (e.g., a single application
-file, ./public and ./views directories, logging, exception detail page,
-etc.). That's where Sinatra::Base comes into play:
+Az alkalmazást felső szinten építeni megfelelhet mondjuk egy kisebb
+app esetén, ám kifejezetten károsnak bizonyulhat olyan komolyabb,
+újra felhasználható komponensek készítésekor, mint például egy Rack
+middleware, Rails meta, egyszerűbb kiszolgáló komponenssel bíró
+könyvtárak vagy éppen Sinatra kiterjesztések. A felső szintű DSL
+bepiszkítja az Objektum névteret, ráadásul kisalkalmazásokra szabott
+beállításokat feltételez (így például egyetlen alkalmazásfájl, ./public
+és ./views könyvtár meglétét, naplózást, kivételkezelő oldalt stb.).
+Itt jön a képbe a Sinatra::Base osztály:
 
   require 'sinatra/base'
 
@@ -504,26 +510,27 @@ etc.). That's where Sinatra::Base comes into play:
     set :foo, 'bar'
 
     get '/' do
-      'Hello world!'
+      'Helló Világ!'
     end
   end
 
-The MyApp class is an independent Rack component that can act as
-Rack middleware, a Rack application, or Rails metal. You can +use+ or
-+run+ this class from a rackup +config.ru+ file; or, control a server
-component shipped as a library:
+A MyApp osztály immár önállóan, mondjuk Rack middleware-ként vagy
+alkalmazásként, esetleg Rails metal-ként is tud működni. Közvetlenül
+használhatod (+use+) vagy futtathatod (+run+) az osztályodat egy rackup
+konfigurációs állományban (+config.ru+), vagy egy szerverkomponenst
+tartalmazó könyvtár vezérlésekor:
 
    MyApp.run! :host => 'localhost', :port => 9090
 
-The methods available to Sinatra::Base subclasses are exactly as those
-available via the top-level DSL. Most top-level apps can be converted to
-Sinatra::Base components with two modifications:
+A Sinatra::Base gyermekosztályaiban elérhető metódusok egyúttal a felső
+szintű DSL-en keresztül is hozzáférhetők. A legtöbb felső szintű
+alkalmazás átalakítható Sinatra::Base alapú komponensekké két lépésben:
 
-* Your file should require +sinatra/base+  instead of +sinatra+;
-  otherwise, all of Sinatra's DSL methods are imported into the main
-  namespace.
-* Put your app's routes, error handlers, filters, and options in a subclass
-  of Sinatra::Base.
+* A fájlban nem a +sinatra+, hanem a +sinatra/base+ osztályt kell
+  beimportálni, mert egyébként az összes Sinatra DSL metódus a fő
+  névtérbe kerül.
+* Az alkalmazás útvonalait, hibakezelőit, szűrőit és beállításait
+  a Sinatra::Base osztály gyermekosztályaiban kell megadni.
 
 +Sinatra::Base+ is a blank slate. Most options are disabled by default,
 including the built-in server. See {Options and Configuration}[http://sinatra.github.com/configuration.html]
@@ -537,7 +544,7 @@ top-level. Have a look at the code for yourself: here's the
 {Sinatra::Delegator mixin}[http://github.com/sinatra/sinatra/blob/master/lib/sinatra/base.rb#L1064]
 being {included into the main namespace}[http://github.com/sinatra/sinatra/blob/master/lib/sinatra/main.rb#L25].
 
-== Parancssor
+== Parancssori lehetőségek
 
 Sinatra alkalmazásokat közvetlenül futtathatunk:
 
@@ -587,4 +594,4 @@ A Sinatra frissítését később így végezheted el:
 * {Lighthouse}[http://sinatra.lighthouseapp.com] - Hibakövetés és kiadások
 * {Twitter}[http://twitter.com/sinatra]
 * {Levelezőlista}[http://groups.google.com/group/sinatrarb]
-* {IRC: #sinatra}[irc://chat.freenode.net/#sinatra] a http://freenode.net-en
+* {IRC: #sinatra}[irc://chat.freenode.net/#sinatra] a http://freenode.net címen
