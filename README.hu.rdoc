@@ -517,7 +517,7 @@ Itt jön a képbe a Sinatra::Base osztály:
 A MyApp osztály immár önállóan, mondjuk Rack middleware-ként vagy
 alkalmazásként, esetleg Rails metal-ként is tud működni. Közvetlenül
 használhatod (+use+) vagy futtathatod (+run+) az osztályodat egy rackup
-konfigurációs állományban (+config.ru+), vagy egy szerverkomponenst
+konfigurációs állományban (+config\.ru+), vagy egy szerverkomponenst
 tartalmazó könyvtár vezérlésekor:
 
    MyApp.run! :host => 'localhost', :port => 9090
@@ -532,17 +532,20 @@ alkalmazás átalakítható Sinatra::Base alapú komponensekké két lépésben:
 * Az alkalmazás útvonalait, hibakezelőit, szűrőit és beállításait
   a Sinatra::Base osztály gyermekosztályaiban kell megadni.
 
-+Sinatra::Base+ is a blank slate. Most options are disabled by default,
-including the built-in server. See {Options and Configuration}[http://sinatra.github.com/configuration.html]
-for details on available options and their behavior.
+A +Sinatra::Base+ osztály igazából egy üres lap: a legtöbb funkció
+alapból ki van kapcsolva, beleértve a beépített szervert is. A 
+beállításokkal és az egyes kapcsolók hatásával az
+{Options and Configuration}[http://sinatra.github.com/configuration.html] lap
+foglalkozik.
 
-SIDEBAR: Sinatra's top-level DSL is implemented using a simple delegation
-system. The +Sinatra::Application+ class -- a special subclass of
-Sinatra::Base -- receives all :get, :put, :post, :delete, :before,
-:error, :not_found, :configure, and :set messages sent to the
-top-level. Have a look at the code for yourself: here's the
-{Sinatra::Delegator mixin}[http://github.com/sinatra/sinatra/blob/master/lib/sinatra/base.rb#L1064]
-being {included into the main namespace}[http://github.com/sinatra/sinatra/blob/master/lib/sinatra/main.rb#L25].
+Széljegyzet: A Sinatra felső szintű DSL-je egy egyszerű delegációs
+rendszerre épül. A Sinatra::Application osztály - a Sinatra::Base egy
+speciális osztályaként - fogadja az összes :get, :put, :post,
+:delete, :before, :error, :not_found, :configure és :set üzenetet,
+ami csak a felső szintre beérkezik. Érdemes utánanézned a kódban,
+miképp {kerül be}[http://github.com/sinatra/sinatra/blob/master/lib/sinatra/main.rb#L25]
+a {Sinatra::Delegator mixin}[http://github.com/sinatra/sinatra/blob/master/lib/sinatra/base.rb#L1064]
+a fő névtérbe.
 
 == Parancssori lehetőségek
 
