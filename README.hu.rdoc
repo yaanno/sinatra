@@ -58,7 +58,7 @@ is el tudod érni:
     "Helló #{n}!"
   end
 
-Az útvonalminták közt szerepelhetnek joker paraméterek is, melyeket a 
+Az útvonalmintákban szerepelhetnek joker paraméterek is, melyeket a 
 <tt>params[:splat]</tt> tömbön keresztül tudunk elérni.
 
   get '/say/*/to/*' do
@@ -71,7 +71,7 @@ Az útvonalminták közt szerepelhetnek joker paraméterek is, melyeket a
     params[:splat] # => ["path/to/file", "xml"]
   end
 
-Reguláris kifejezések is alkalmazhatók útvonalmintákként:
+Reguláris kifejezéseket is felvehetünk az útvonalba:
 
   get %r{/hello/([\w]+)} do
     "Helló, #{params[:captures].first}!"
