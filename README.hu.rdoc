@@ -406,7 +406,7 @@ Ez fog megjelenni:
   Szóval az van, hogy... valami nem stimmel!
 
 A Sinatra speciális <tt>not_found</tt> és <tt>error</tt> hibakezelőket
-használ amikor a futtatási környezet fejlesztői módba van kapcsolva.
+használ, amikor a futtatási környezet fejlesztői módba van kapcsolva.
 
 == Mime típusok
 
@@ -420,7 +420,7 @@ bevezetéséhez:
 == Rack Middleware
 
 A Sinatra egy Ruby keretrendszerek számára kifejlesztett egyszerű és szabványos
-interfészre, a Rack[http://rack.rubyforge.org/]-re épül. A Rack fejlesztői 
+interfészre, a {Rack}[http://rack.rubyforge.org/]-re épül. A Rack fejlesztői 
 szempontból egyik legérdekesebb jellemzője, hogy támogatja az úgynevezett
 "middleware" elnevezésű komponenseket, amelyek beékelődnek a szerver és az
 alkalmazás közé, így képesek megfigyelni és/vagy módosítani a HTTP 
