@@ -526,7 +526,7 @@ A Sinatra::Base gyermekosztályaiban elérhető metódusok egyúttal a felső
 szintű DSL-en keresztül is hozzáférhetők. A legtöbb felső szintű
 alkalmazás átalakítható Sinatra::Base alapú komponensekké két lépésben:
 
-* A fájlban nem a +sinatra+, hanem a +sinatra/base+ osztályt kell
+* A fájlban nem a +sinatra+, hanem a +sinatra\/base+ osztályt kell
   beimportálni, mert egyébként az összes Sinatra DSL metódus a fő
   névtérbe kerül.
 * Az alkalmazás útvonalait, hibakezelőit, szűrőit és beállításait
