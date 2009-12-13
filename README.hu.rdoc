@@ -77,7 +77,7 @@ Reguláris kifejezéseket is felvehetünk az útvonalba:
     "Helló, #{params[:captures].first}!"
   end
 
-Esetleg blokk paraméterek:
+Vagy blokk paramétereket:
 
   get %r{/hello/([\w]+)} do |c|
     "Helló, #{c}!"
@@ -309,9 +309,18 @@ az útvonalakban és a sablonokban is:
     params[:splat] #=> 'bar/baz'
   end
 
+Az utószűrők az egyes kérések után, az adott kérés kontextusában kerülnek
+kiértékelésre, így ezek is képesek módosítani a kérést és a választ egyaránt.
+Az előszűrőkben és úvonalakban létrehozott példányváltozók elérhetőek lesznek
+az utószűrők számára:
+
+  after do
+    puts response.status
+  end
+
 == Megállítás
 
-Egy kérés előszűrőben vagy útvonalban történő azonnal blokkolásához
+Egy kérés szűrőben vagy útvonalban történő azonnal blokkolásához
 használd a következő parancsot:
 
   halt
@@ -412,10 +421,10 @@ használ, amikor a futtatási környezet fejlesztői módba van kapcsolva.
 
 A <tt>send_file</tt> metódus használatakor, vagy statikus fájlok
 kiszolgálásakor előfordulhat, hogy a Sinatra nem ismeri fel a fájlok
-mime típusát. Ilyenkor használd a +mime+ kapcsolót a fájlkiterjesztés
+mime típusát. Ilyenkor használd a +mime_type+ kapcsolót a fájlkiterjesztés
 bevezetéséhez:
 
-  mime :foo, 'text/foo'
+  mime_type :foo, 'text/foo'
 
 == Rack Middleware
 
@@ -496,7 +505,7 @@ a 0.9.2-es kiadástól kezdve elavultnak számítanak.
 Az alkalmazást felső szinten építeni megfelelhet mondjuk egy kisebb
 app esetén, ám kifejezetten károsnak bizonyulhat olyan komolyabb,
 újra felhasználható komponensek készítésekor, mint például egy Rack
-middleware, Rails meta, egyszerűbb kiszolgáló komponenssel bíró
+middleware, Rails metal, egyszerűbb kiszolgáló komponenssel bíró
 könyvtárak vagy éppen Sinatra kiterjesztések. A felső szintű DSL
 bepiszkítja az Objektum névteret, ráadásul kisalkalmazásokra szabott
 beállításokat feltételez (így például egyetlen alkalmazásfájl, ./public
@@ -514,8 +523,8 @@ Itt jön a képbe a Sinatra::Base osztály:
     end
   end
 
-A MyApp osztály immár önállóan, mondjuk Rack middleware-ként vagy
-alkalmazásként, esetleg Rails metal-ként is tud működni. Közvetlenül
+A MyApp osztály immár önálló Rack komponensként, mondjuk Rack middleware-ként
+vagy alkalmazásként, esetleg Rails metal-ként is tud működni. Közvetlenül
 használhatod (+use+) vagy futtathatod (+run+) az osztályodat egy rackup
 konfigurációs állományban (+config.ru+), vagy egy szerverkomponenst
 tartalmazó könyvtár vezérlésekor:
