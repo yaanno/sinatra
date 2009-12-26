@@ -416,8 +416,8 @@ module Sinatra
     # Pass control to the next matching route.
     # If there are no more matching routes, Sinatra will
     # return a 404 response.
-    def pass
-      throw :pass
+    def pass(&block)
+      throw :pass, block
     end
 
     # Forward the request to the downstream app -- middleware only.
@@ -444,7 +444,7 @@ module Sinatra
     end
 
     # Run routes defined on the class and all superclasses.
-    def route!(base=self.class)
+    def route!(base=self.class, pass_block=nil)
       if routes = base.routes[@request.request_method]
         original_params = @params
         path            = unescape(@request.path_info)
@@ -470,7 +470,7 @@ module Sinatra
             @params = original_params.merge(params)
             @block_params = values
 
-            catch(:pass) do
+            pass_block = catch(:pass) do
               conditions.each { |cond|
                 throw :pass if instance_eval(&cond) == false }
               route_eval(&block)
@@ -483,9 +483,11 @@ module Sinatra
 
       # Run routes defined in superclass.
       if base.superclass.respond_to?(:routes)
-        route! base.superclass
+        route! base.superclass, pass_block
         return
       end
+
+      route_eval(&pass_block) if pass_block
 
       route_missing
     end
@@ -581,9 +583,10 @@ module Sinatra
     end
 
     def handle_not_found!(boom)
-      @env['sinatra.error'] = boom
-      @response.status      = 404
-      @response.body        = ['<h1>Not Found</h1>']
+      @env['sinatra.error']          = boom
+      @response.status               = 404
+      @response.headers['X-Cascade'] = 'pass'
+      @response.body                 = ['<h1>Not Found</h1>']
       error_block! boom.class, NotFound
     end
 
@@ -720,8 +723,8 @@ module Sinatra
 
       # Load embeded templates from the file; uses the caller's __FILE__
       # when no file is specified.
-      def use_in_file_templates!(file=nil)
-        file ||= caller_files.first
+      def inline_templates=(file=nil)
+        file = (file.nil? || file == true) ? caller_files.first : file
 
         begin
           app, data =
@@ -1076,9 +1079,8 @@ module Sinatra
     end
   end
 
-  # The top-level Application. All DSL methods executed on main are delegated
-  # to this class.
-  class Application < Base
+  # Base class for classic style (top-level) applications.
+  class Default < Base
     set :raise_errors, Proc.new { test? }
     set :show_exceptions, Proc.new { development? }
     set :dump_errors, true
@@ -1093,6 +1095,11 @@ module Sinatra
       Delegator.delegate(*added_methods)
       super(*extensions, &block)
     end
+  end
+
+  # The top-level Application. All DSL methods executed on main are delegated
+  # to this class.
+  class Application < Default
   end
 
   # Sinatra delegation mixin. Mixing this module into an object causes all
@@ -1126,11 +1133,11 @@ module Sinatra
 
   # Extend the top-level DSL with the modules provided.
   def self.register(*extensions, &block)
-    Application.register(*extensions, &block)
+    Default.register(*extensions, &block)
   end
 
   # Include the helper modules provided in Sinatra's request context.
   def self.helpers(*extensions, &block)
-    Application.helpers(*extensions, &block)
+    Default.helpers(*extensions, &block)
   end
 end
